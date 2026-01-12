@@ -14,12 +14,12 @@ internal static class Program
 
     private static async Task Main()
     {
-        string logFileName = $"test-sms-console-app-{DateTime.Now:yyyyMMdd}.log";
-
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
             .WriteTo.Console()
-            .WriteTo.File(logFileName)
+            .WriteTo.File(
+                path: "Logs/test-sms-console-app-.log",
+                rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
         try
