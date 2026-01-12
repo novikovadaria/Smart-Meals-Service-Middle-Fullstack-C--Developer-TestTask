@@ -19,7 +19,7 @@ public class FoodApiClient
             BaseAddress = new Uri(baseUrl)
         };
 
-        var authToken = Convert.ToBase64String(
+        string? authToken = Convert.ToBase64String(
             Encoding.UTF8.GetBytes($"{login}:{password}")
         );
 
@@ -32,7 +32,7 @@ public class FoodApiClient
     /// </summary>
     public async Task<IReadOnlyCollection<Dish>> GetDishes()
     {
-        var requestBody = new
+        object requestBody = new
         {
             Command = "GetMenu",
             CommandParameters = new
@@ -41,7 +41,7 @@ public class FoodApiClient
             }
         };
 
-        var response = await SendAsync<MenuDataDto>(requestBody);
+        ApiResponseDto<MenuDataDto> response = await Send<MenuDataDto>(requestBody);
 
         return response.Data?.MenuItems
                ?? throw new InvalidOperationException("MenuItems not found in response");
@@ -52,7 +52,7 @@ public class FoodApiClient
     /// </summary>
     public async Task PlaceOrder(Order order)
     {
-        var orderDto = new OrderDto
+        OrderDto orderDto = new OrderDto
         {
             OrderId = order.OrderId,
             MenuItems = order.Items.Select(i => new OrderItemDto
@@ -62,7 +62,7 @@ public class FoodApiClient
             }).ToList()
         };
 
-        var requestBody = new
+        object requestBody = new
         {
             Command = "SendOrder",
             CommandParameters = orderDto
@@ -76,16 +76,16 @@ public class FoodApiClient
     /// </summary>
     private async Task<ApiResponseDto<T>> Send<T>(object body)
     {
-        var json = JsonSerializer.Serialize(body, _jsonOptions);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        string json = JsonSerializer.Serialize(body, _jsonOptions);
+        StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var httpResponse = await _httpClient.PostAsync(string.Empty, content);
-        var responseJson = await httpResponse.Content.ReadAsStringAsync();
+        HttpResponseMessage httpResponse = await _httpClient.PostAsync(string.Empty, content);
+        string responseJson = await httpResponse.Content.ReadAsStringAsync();
 
         var response = JsonSerializer.Deserialize<ApiResponseDto<T>>(
             responseJson, _jsonOptions);
 
-        if (response == null)
+        if (response is null)
             throw new InvalidOperationException("Failed to deserialize server response");
 
         if (!response.Success)
