@@ -2,7 +2,7 @@
 {
     public class Order
     {
-        public int OrderId { get; set; }
-        public List<Item> Items { get; set; } = new();
+        public Guid OrderId { get; set; }
+        public List<OrderItem> Items { get; set; } = new();
     }
 }
