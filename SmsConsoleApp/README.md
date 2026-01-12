@@ -31,3 +31,17 @@ EF Core Scaffold (dotnet ef dbcontext scaffold).
 
 Вы можете использовать поле UseMockData  в appsettings.json для включения мокового режима (возврат захардкоженных данных для вывода меню, заглушка при отправки заказа)
 
+### Логирование и ошибки
+
+Используется Serilog
+
+Все изменения и ошибки логируются
+
+Логи сохраняются в папку:
+
+```\bin\Debug\net8.0-windows\Logs```
+
+
+Формат имени файла:
+
+```test-sms-console-app-yyyyMMdd.log```
